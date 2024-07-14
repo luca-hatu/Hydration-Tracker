@@ -1,5 +1,6 @@
 let dailyGoal = 64;
 let currentIntake = 0;
+let unit = localStorage.getItem("unit") || "oz";
 
 document.addEventListener("DOMContentLoaded", function() {
     dailyGoal = localStorage.getItem("dailyGoal") || 64;
@@ -20,6 +21,8 @@ document.addEventListener("DOMContentLoaded", function() {
     displayDailyTip();
     displayChart();
 });
+document.getElementById("unit").value = unit;
+updateProgress();
 
 function logWater(amount) {
     currentIntake = parseInt(currentIntake) + amount;
@@ -193,4 +196,23 @@ function displayChart() {
             }]
         }
     });
+}
+function resetProgress() {
+    currentIntake = 0;
+    localStorage.setItem("currentIntake", currentIntake);
+    updateProgress();
+    displayAchievements();
+}
+
+function setUnit() {
+    unit = document.getElementById("unit").value;
+    localStorage.setItem("unit", unit);
+    updateProgress();
+}
+
+function convertToUnit(amount, unit) {
+    if (unit === "ml") {
+        return amount * 29.5735; // 1 oz = 29.5735 ml
+    }
+    return amount; // default is oz
 }

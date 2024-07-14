@@ -28,6 +28,7 @@
             <label for="goal">Daily Goal (oz):</label>
             <input type="number" id="goal" value="64">
             <button onclick="setGoal()">Set Goal</button>
+            <button onclick="resetProgress()">Reset Progress</button>
         </div>
         <div class="tips-container">
             <h2>Daily Hydration Tip</h2>
@@ -50,6 +51,11 @@
         <select id="theme" onchange="setTheme()">
             <option value="light">Light</option>
             <option value="dark">Dark</option>
+        </select>
+        <label for="unit">Unit:</label>
+        <select id="unit" onchange="setUnit()">
+            <option value="oz">oz</option>
+            <option value="ml">ml</option>
         </select>
     </div>
     <script src="script.js"></script>
