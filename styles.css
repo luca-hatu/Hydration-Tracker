@@ -94,3 +94,27 @@ body.dark select {
     color: #fff;
     border: 1px solid #777;
 }
+.achievements-container {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.achievements-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.achievements-container li {
+    background-color: #e0e0e0;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.achievements-container img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
