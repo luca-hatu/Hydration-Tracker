@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     displayStreak();
     requestNotificationPermission();
     setNotificationInterval();
+    displayStats();
 
     displayDailyTip();
     displayChart();
@@ -351,4 +352,29 @@ function showConfetti() {
     setTimeout(() => {
         confettiElement.remove();
     }, 2000);
+}
+function displayStats() {
+    const history = JSON.parse(localStorage.getItem('history')) || [];
+    const today = new Date();
+    
+    const weeklyStats = calculateStats(history, 7);
+    const monthlyStats = calculateStats(history, 30);
+
+    document.getElementById("weekly-stats").innerText = `Average: ${weeklyStats.avg} oz, Total: ${weeklyStats.total} oz`;
+    document.getElementById("monthly-stats").innerText = `Average: ${monthlyStats.avg} oz, Total: ${monthlyStats.total} oz`;
+}
+
+function calculateStats(history, days) {
+    const now = new Date();
+    const relevantHistory = history.filter(entry => {
+        const entryDate = new Date(entry.date);
+        const diffTime = Math.abs(now - entryDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= days;
+    });
+
+    const total = relevantHistory.reduce((sum, entry) => sum + entry.intake, 0);
+    const avg = relevantHistory.length ? (total / relevantHistory.length).toFixed(2) : 0;
+
+    return { total, avg };
 }

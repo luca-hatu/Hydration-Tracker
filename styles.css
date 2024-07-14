@@ -156,3 +156,7 @@ select {
 .confetti {
     animation: fadeOut 2s forwards;
 }
+.stats-container {
+    margin-bottom: 20px;
+    text-align: left;
+}
