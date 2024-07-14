@@ -78,3 +78,19 @@ input[type="number"] {
     padding: 10px;
     border-radius: 5px;
 }
+body.dark {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark .container {
+    background-color: #444;
+    color: #fff;
+}
+
+body.dark input[type="number"],
+body.dark select {
+    background-color: #555;
+    color: #fff;
+    border: 1px solid #777;
+}

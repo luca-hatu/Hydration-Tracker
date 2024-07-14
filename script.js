@@ -1,4 +1,4 @@
-let dailyGoal = 64; 
+let dailyGoal = 64;
 let currentIntake = 0;
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -6,9 +6,15 @@ document.addEventListener("DOMContentLoaded", function() {
     currentIntake = localStorage.getItem("currentIntake") || 0;
 
     checkForDailyReset();
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.getElementById("theme").value = savedTheme;
+    setTheme();
 
     document.getElementById("goal").value = dailyGoal;
     updateProgress();
+    displayHistory();
+    requestNotificationPermission();
+    setNotificationInterval();
 });
 
 function logWater(amount) {
@@ -16,11 +22,13 @@ function logWater(amount) {
     localStorage.setItem("currentIntake", currentIntake);
     updateProgress();
 }
+
 function checkForDailyReset() {
     const lastReset = localStorage.getItem('lastReset');
     const today = new Date().toLocaleDateString();
 
     if (lastReset !== today) {
+        saveToHistory();
         currentIntake = 0;
         localStorage.setItem('currentIntake', currentIntake);
         localStorage.setItem('lastReset', today);
@@ -53,12 +61,13 @@ function updateProgress() {
     document.getElementById("progress-bar").style.width = progressPercentage + "%";
     document.getElementById("progress-text").innerText = `${currentIntake} / ${dailyGoal} oz`;
 }
+
 function saveToHistory() {
     let history = JSON.parse(localStorage.getItem('history')) || [];
     const today = new Date().toLocaleDateString();
 
     history.push({ date: today, intake: currentIntake });
-    if (history.length > 7) history.shift(); 
+    if (history.length > 7) history.shift();
 
     localStorage.setItem('history', JSON.stringify(history));
 }
@@ -73,4 +82,26 @@ function displayHistory() {
         listItem.textContent = `${entry.date}: ${entry.intake} oz`;
         historyList.appendChild(listItem);
     });
+}
+
+function requestNotificationPermission() {
+    if (Notification.permission === "default") {
+        Notification.requestPermission();
+    }
+}
+
+function sendNotification() {
+    if (Notification.permission === "granted") {
+        new Notification("Time to drink water!");
+    }
+}
+
+function setNotificationInterval() {
+    const interval = 60 * 60 * 1000;
+    setInterval(sendNotification, interval);
+}
+function setTheme() {
+    const theme = document.getElementById("theme").value;
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
 }
