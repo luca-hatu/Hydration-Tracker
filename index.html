@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydration Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hydration Tracker</h1>
+        <div class="progress-container">
+            <h2>Today's Progress</h2>
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+            <p id="progress-text">0 / 0 oz</p>
+        </div>
+        <div class="log-container">
+            <h2>Log Water Intake</h2>
+            <button onclick="logWater(8)">8 oz</button>
+            <button onclick="logWater(16)">16 oz</button>
+            <input type="number" id="custom-amount" placeholder="Custom oz">
+            <button onclick="logCustomWater()">Log Custom</button>
+        </div>
+        <div class="settings-container">
+            <h2>Settings</h2>
+            <label for="goal">Daily Goal (oz):</label>
+            <input type="number" id="goal" value="64">
+            <button onclick="setGoal()">Set Goal</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
