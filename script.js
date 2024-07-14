@@ -2,6 +2,8 @@ let dailyGoal = 64;
 let currentIntake = 0;
 let points = 0;
 let unit = localStorage.getItem("unit") || "oz";
+let currentStreak = localStorage.getItem("currentStreak") || 0;
+let lastGoalMet = localStorage.getItem("lastGoalMet") || null;
 
 document.addEventListener("DOMContentLoaded", function() {
     dailyGoal = localStorage.getItem("dailyGoal") || 64;
@@ -17,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
     updateProgress();
     displayHistory();
     displayAchievements();
+    displayStreak();
     requestNotificationPermission();
     setNotificationInterval();
 
@@ -34,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function logWater(amount) {
     currentIntake = parseInt(currentIntake) + amount;
-    points += amount; // Earn points equal to the amount of water logged
+    points += amount; 
     localStorage.setItem("currentIntake", currentIntake);
     localStorage.setItem("points", points);
     updateProgress();
@@ -81,11 +84,11 @@ function updateProgress() {
 
     if (currentIntake >= dailyGoal) {
         if (!localStorage.getItem('goalMet')) {
-            points += 50; // Bonus points for meeting the daily goal
+            points += 50; 
             localStorage.setItem('points', points);
             localStorage.setItem('goalMet', true);
             alert("Congratulations! You've met your daily goal and earned 50 bonus points!");
-            triggerConfetti(); // Trigger confetti animation
+            triggerConfetti(); 
         }
     } else {
         localStorage.removeItem('goalMet');
@@ -298,4 +301,54 @@ function resetPoints() {
     points = 0;
     localStorage.setItem("points", points);
     updatePointsDisplay();
+}
+function shareAchievement() {
+    const shareData = {
+        title: 'I achieved my daily hydration goal!',
+        text: `I drank ${currentIntake} ${unit} of water today. Stay hydrated!`,
+        url: window.location.href
+    };
+
+    navigator.share(shareData)
+        .then(() => console.log('Share was successful.'))
+        .catch((error) => console.error('Share failed:', error));
+}
+function checkStreak() {
+    const today = new Date().toLocaleDateString();
+
+    if (currentIntake >= dailyGoal) {
+        if (lastGoalMet !== today) {
+            currentStreak = parseInt(currentStreak) + 1;
+            localStorage.setItem("currentStreak", currentStreak);
+            localStorage.setItem("lastGoalMet", today);
+            displayStreak();
+            showConfetti();
+        }
+    }
+}
+
+function displayStreak() {
+    document.getElementById("current-streak").innerText = `${currentStreak} days`;
+}
+
+function showConfetti() {
+    const confettiElement = document.createElement('div');
+    confettiElement.className = 'confetti';
+    document.body.appendChild(confettiElement);
+
+    confettiElement.style.position = 'fixed';
+    confettiElement.style.top = '50%';
+    confettiElement.style.left = '50%';
+    confettiElement.style.transform = 'translate(-50%, -50%)';
+    confettiElement.style.zIndex = '1000';
+    confettiElement.style.width = '100px';
+    confettiElement.style.height = '100px';
+    confettiElement.style.pointerEvents = 'none';
+    confettiElement.style.backgroundImage = 'url(confetti.gif)';
+    confettiElement.style.backgroundSize = 'cover';
+    confettiElement.style.animation = 'fadeOut 2s forwards';
+
+    setTimeout(() => {
+        confettiElement.remove();
+    }, 2000);
 }

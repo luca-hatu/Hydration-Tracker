@@ -144,3 +144,15 @@ select {
     border-radius: 5px;
     border: 1px solid #ccc;
 }
+.streak-container {
+    margin-bottom: 20px;
+    text-align: left;
+}
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.confetti {
+    animation: fadeOut 2s forwards;
+}
