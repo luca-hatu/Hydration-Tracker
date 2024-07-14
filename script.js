@@ -1,10 +1,12 @@
 let dailyGoal = 64;
 let currentIntake = 0;
+let points = 0;
 let unit = localStorage.getItem("unit") || "oz";
 
 document.addEventListener("DOMContentLoaded", function() {
     dailyGoal = localStorage.getItem("dailyGoal") || 64;
     currentIntake = localStorage.getItem("currentIntake") || 0;
+    points = localStorage.getItem("points") || 0;
 
     checkForDailyReset();
     const savedTheme = localStorage.getItem("theme") || "light";
@@ -25,15 +27,18 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("weight").value = profile.weight;
         document.getElementById("age").value = profile.age;
     }
+    document.getElementById("unit").value = unit;
+    updateProgress();
+    updatePointsDisplay();
 });
-document.getElementById("unit").value = unit;
-updateProgress();
 
 function logWater(amount) {
     currentIntake = parseInt(currentIntake) + amount;
+    points += amount; // Earn points equal to the amount of water logged
     localStorage.setItem("currentIntake", currentIntake);
+    localStorage.setItem("points", points);
     updateProgress();
-    checkAchievements();
+    updatePointsDisplay();
 }
 
 function checkForDailyReset() {
@@ -72,8 +77,33 @@ function setGoal() {
 function updateProgress() {
     const progressPercentage = (currentIntake / dailyGoal) * 100;
     document.getElementById("progress-bar").style.width = progressPercentage + "%";
-    document.getElementById("progress-text").innerText = `${currentIntake} / ${dailyGoal} oz`;
-    checkAchievements();
+    document.getElementById("progress-text").innerText = `${currentIntake} / ${dailyGoal} ${unit}`;
+
+    if (currentIntake >= dailyGoal) {
+        if (!localStorage.getItem('goalMet')) {
+            points += 50; // Bonus points for meeting the daily goal
+            localStorage.setItem('points', points);
+            localStorage.setItem('goalMet', true);
+            alert("Congratulations! You've met your daily goal and earned 50 bonus points!");
+            triggerConfetti(); // Trigger confetti animation
+        }
+    } else {
+        localStorage.removeItem('goalMet');
+    }
+
+    updatePointsDisplay();
+}
+
+function triggerConfetti() {
+    confetti({
+        particleCount: 200,
+        spread: 70,
+        origin: { y: 0.6 }
+    });
+}
+
+function updatePointsDisplay() {
+    document.getElementById('points-display').innerText = `${points} Points`;
 }
 
 function saveToHistory() {
@@ -93,7 +123,7 @@ function displayHistory() {
 
     history.forEach(entry => {
         const listItem = document.createElement('li');
-        listItem.textContent = `${entry.date}: ${entry.intake} oz`;
+        listItem.textContent = `${entry.date}: ${entry.intake} ${unit}`;
         historyList.appendChild(listItem);
     });
 }
@@ -113,8 +143,8 @@ function sendNotification() {
 function setNotificationInterval() {
     const interval = 60 * 60 * 1000; 
     setInterval(sendNotification, interval);
-    
 }
+
 function setTheme() {
     const theme = document.getElementById("theme").value;
     document.body.className = theme;
@@ -171,6 +201,7 @@ function displayAchievements() {
         achievementsList.appendChild(listItem);
     });
 }
+
 const tips = [
     "Drink a glass of water first thing in the morning.",
     "Carry a reusable water bottle with you.",
@@ -178,10 +209,12 @@ const tips = [
     "Drink water before, during, and after exercise.",
     "Set reminders to drink water throughout the day."
 ];
+
 function displayDailyTip() {
     const tip = tips[new Date().getDate() % tips.length];
     document.getElementById("hydration-tip").innerText = tip;
 }
+
 function displayChart() {
     const history = JSON.parse(localStorage.getItem('history')) || [];
     const labels = history.map(entry => entry.date);
@@ -202,6 +235,7 @@ function displayChart() {
         }
     });
 }
+
 function resetProgress() {
     currentIntake = 0;
     localStorage.setItem("currentIntake", currentIntake);
@@ -221,6 +255,7 @@ function convertToUnit(amount, unit) {
     }
     return amount;
 }
+
 function saveProfile() {
     const weight = document.getElementById("weight").value;
     const age = document.getElementById("age").value;
@@ -232,6 +267,7 @@ function saveProfile() {
         alert("Please enter valid information.");
     }
 }
+
 function suggestWaterIntake() {
     const age = parseInt(document.getElementById('age').value);
     const weight = parseInt(document.getElementById('weight').value);
@@ -256,4 +292,10 @@ function suggestWaterIntake() {
     } else {
         alert('Please fill out all profile fields correctly.');
     }
+}
+
+function resetPoints() {
+    points = 0;
+    localStorage.setItem("points", points);
+    updatePointsDisplay();
 }

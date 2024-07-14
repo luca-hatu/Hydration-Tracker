@@ -64,8 +64,13 @@
                 <option value="high">High</option>
             </select>
             <button onclick="suggestWaterIntake()">Suggest Water Intake</button>
+            <button onclick="saveProfile()">Save Profile</button>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>        
+        <div class="points-container">
+            <h2>Your Points</h2>
+            <p id="points-display">0 Points</p>
+            <button onclick="resetPoints()">Reset Points</button>
+        </div>
         <label for="theme">Theme:</label>
         <select id="theme" onchange="setTheme()">
             <option value="light">Light</option>
@@ -77,6 +82,8 @@
             <option value="ml">ml</option>
         </select>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
