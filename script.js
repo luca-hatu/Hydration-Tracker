@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function() {
     dailyGoal = localStorage.getItem("dailyGoal") || 64;
     currentIntake = localStorage.getItem("currentIntake") || 0;
 
+    checkForDailyReset();
+
     document.getElementById("goal").value = dailyGoal;
     updateProgress();
 });
@@ -13,6 +15,17 @@ function logWater(amount) {
     currentIntake = parseInt(currentIntake) + amount;
     localStorage.setItem("currentIntake", currentIntake);
     updateProgress();
+}
+function checkForDailyReset() {
+    const lastReset = localStorage.getItem('lastReset');
+    const today = new Date().toLocaleDateString();
+
+    if (lastReset !== today) {
+        currentIntake = 0;
+        localStorage.setItem('currentIntake', currentIntake);
+        localStorage.setItem('lastReset', today);
+        updateProgress();
+    }
 }
 
 function logCustomWater() {
@@ -39,4 +52,25 @@ function updateProgress() {
     const progressPercentage = (currentIntake / dailyGoal) * 100;
     document.getElementById("progress-bar").style.width = progressPercentage + "%";
     document.getElementById("progress-text").innerText = `${currentIntake} / ${dailyGoal} oz`;
+}
+function saveToHistory() {
+    let history = JSON.parse(localStorage.getItem('history')) || [];
+    const today = new Date().toLocaleDateString();
+
+    history.push({ date: today, intake: currentIntake });
+    if (history.length > 7) history.shift(); 
+
+    localStorage.setItem('history', JSON.stringify(history));
+}
+
+function displayHistory() {
+    const history = JSON.parse(localStorage.getItem('history')) || [];
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = '';
+
+    history.forEach(entry => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${entry.date}: ${entry.intake} oz`;
+        historyList.appendChild(listItem);
+    });
 }
