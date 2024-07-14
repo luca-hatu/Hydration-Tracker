@@ -29,6 +29,10 @@
             <input type="number" id="goal" value="64">
             <button onclick="setGoal()">Set Goal</button>
         </div>
+        <div class="tips-container">
+            <h2>Daily Hydration Tip</h2>
+            <p id="hydration-tip"></p>
+        </div>
         <div class="history-container">
             <h2>Hydration History</h2>
             <ul id="history-list"></ul>
@@ -36,7 +40,12 @@
         <div class="achievements-container">
             <h2>Achievements</h2>
             <ul id="achievements-list"></ul>
-        </div>        
+        </div>
+        <div class="chart-container">
+            <h2>Hydration Chart</h2>
+            <canvas id="hydrationChart"></canvas>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>        
         <label for="theme">Theme:</label>
         <select id="theme" onchange="setTheme()">
             <option value="light">Light</option>

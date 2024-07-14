@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", function() {
     displayAchievements();
     requestNotificationPermission();
     setNotificationInterval();
+
+    displayDailyTip();
+    displayChart();
 });
 
 function logWater(amount) {
@@ -158,5 +161,36 @@ function displayAchievements() {
         listItem.appendChild(trophy);
         listItem.appendChild(document.createTextNode(achievement));
         achievementsList.appendChild(listItem);
+    });
+}
+const tips = [
+    "Drink a glass of water first thing in the morning.",
+    "Carry a reusable water bottle with you.",
+    "Add a slice of lemon or cucumber to your water for flavor.",
+    "Drink water before, during, and after exercise.",
+    "Set reminders to drink water throughout the day."
+];
+function displayDailyTip() {
+    const tip = tips[new Date().getDate() % tips.length];
+    document.getElementById("hydration-tip").innerText = tip;
+}
+function displayChart() {
+    const history = JSON.parse(localStorage.getItem('history')) || [];
+    const labels = history.map(entry => entry.date);
+    const data = history.map(entry => entry.intake);
+
+    const ctx = document.getElementById('hydrationChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Daily Water Intake (oz)',
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        }
     });
 }
