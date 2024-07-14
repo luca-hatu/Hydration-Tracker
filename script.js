@@ -20,6 +20,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     displayDailyTip();
     displayChart();
+    const profile = JSON.parse(localStorage.getItem("profile"));
+    if (profile) {
+        document.getElementById("weight").value = profile.weight;
+        document.getElementById("age").value = profile.age;
+    }
 });
 document.getElementById("unit").value = unit;
 updateProgress();
@@ -212,7 +217,43 @@ function setUnit() {
 
 function convertToUnit(amount, unit) {
     if (unit === "ml") {
-        return amount * 29.5735; // 1 oz = 29.5735 ml
+        return amount * 29.5735;
     }
-    return amount; // default is oz
+    return amount;
+}
+function saveProfile() {
+    const weight = document.getElementById("weight").value;
+    const age = document.getElementById("age").value;
+
+    if (weight && age) {
+        localStorage.setItem("profile", JSON.stringify({ weight, age }));
+        alert("Profile saved!");
+    } else {
+        alert("Please enter valid information.");
+    }
+}
+function suggestWaterIntake() {
+    const age = parseInt(document.getElementById('age').value);
+    const weight = parseInt(document.getElementById('weight').value);
+    const gender = document.getElementById('gender').value;
+    const activity = document.getElementById('activity').value;
+
+    if (!isNaN(age) && !isNaN(weight) && gender && activity) {
+        let baseIntake = weight * 0.5; 
+        if (age > 55) baseIntake *= 0.9; 
+        if (activity === 'moderate') baseIntake *= 1.2;
+        if (activity === 'high') baseIntake *= 1.4;
+
+        if (gender === 'male') {
+            baseIntake *= 1.1; 
+        }
+
+        dailyGoal = Math.round(baseIntake);
+        document.getElementById('goal').value = dailyGoal;
+        localStorage.setItem('dailyGoal', dailyGoal);
+        updateProgress();
+        alert(`Suggested daily water intake: ${dailyGoal} oz`);
+    } else {
+        alert('Please fill out all profile fields correctly.');
+    }
 }
